@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>北印校车时刻</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .header { margin-bottom: 20px; color: #1a1a1a; text-align: center; }
+        .current-time { font-size: 0.9em; color: #666; margin-top: 5px; }
+        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 350px; padding: 24px; margin-bottom: 20px; text-align: center; box-sizing: border-box; }
+        .route-title { font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 15px; }
+        .time-display { font-size: 2.5em; font-weight: bold; color: #007AFF; margin-bottom: 10px; }
+        .remain-display { font-size: 1.2em; color: #FF3B30; font-weight: 500; background: #FFF0F0; padding: 5px 12px; border-radius: 20px; display: inline-block;}
+        .empty-state { font-size: 1.3em; color: #999; margin: 20px 0; }
+        .footer { font-size: 0.8em; color: #aaa; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🚌 校车实时看板</h2>
+        <div class="current-time" id="clock">当前时间：--:--:--</div>
+    </div>
+
+    <div id="content"></div>
+
+    <div class="footer">本地实时运算，无需刷新</div>
+
+    <script>
+        const mainToKang = ["07:20", "07:35", "08:00", "08:35", "08:45", "09:25", "09:50", "10:30", "10:55", "11:40", "12:30", "13:10", "13:30", "14:10", "14:25", "15:00", "15:25", "16:00", "16:25", "17:10", "18:00", "18:20", "19:00", "19:25", "19:50", "20:10", "20:40", "21:00", "21:35", "22:00", "22:15"];
+        const kangToMain = ["07:00", "07:40", "08:00", "08:25", "09:00", "09:25", "10:00", "10:30", "10:50", "11:40", "12:30", "13:10", "13:40", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:10", "17:55", "18:30", "18:40", "19:20", "19:50", "20:10", "20:40", "21:00", "21:35", "21:55", "22:20"];
+
+        function findNextBus(schedule, currentMinutes) {
+            for (let timeStr of schedule) {
+                let parts = timeStr.split(':');
+                let busMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                if (busMinutes > currentMinutes) {
+                    return { time: timeStr, remain: busMinutes - currentMinutes };
+                }
+            }
+            return null;
+        }
+
+        function updateBoard() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('clock').innerText = '当前时间：' + hours + ':' + minutes + ':' + seconds;
+
+            const day = now.getDay();
+            const contentDiv = document.getElementById('content');
+
+            if (day === 0 || day === 6) {
+                contentDiv.innerHTML = '<div class="card"><div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div></div>';
+                return;
+            }
+
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const nextMK = findNextBus(mainToKang, currentMinutes);
+            const nextKM = findNextBus(kangToMain, currentMinutes);
+
+            let html = '';
+
+            html += '<div class="card"><div class="route-title">➡️ 校本部 往 康庄校区</div>';
+            if (nextMK) {
+                html += '<div class="time-display">' + nextMK.time + '</div><div class="remain-display">还剩 ' + nextMK.remain + ' 分钟</div>';
+            } else {
+                html += '<div class="empty-state">今日已无班车</div>';
+            }
+            html += '</div>';
+
+            html += '<div class="card"><div class="route-title">⬅️ 康庄校区 往 校本部</div>';
+            if (nextKM) {
+                html += '<div class="time-display">' + nextKM.time + '</div><div class="remain-display">还剩 ' + nextKM.remain + ' 分钟</div>';
+            } else {
+                html += '<div class="empty-state">今日已无班车</div>';
+            }
+            html += '</div>';
+
+            contentDiv.innerHTML = html;
+        }
+
+        setInterval(updateBoard, 1000);
+        updateBoard();
+    </script>
+</body>
+</html>
