@@ -8,10 +8,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北印校车时刻</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header { margin-bottom: 25px; color: #1a1a1a; text-align: center; }
-        .current-time { font-size: 0.9em; color: #666; margin-top: 5px; background: #e0e4e8; padding: 4px 12px; border-radius: 20px; display: inline-block; }
-        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            margin-bottom: 25px;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        .current-time {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            background: #e0e4e8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
         /* 两列响应式核心容器 */
         .main-container {
             display: flex;
@@ -29,197 +51,317 @@
             flex-direction: column;
             gap: 16px;
         }
-        
+
         /* 卡片基础样式 */
-        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); width: 100%; padding: 24px; text-align: center; box-sizing: border-box; }
-        .route-title { font-size: 1.1em; font-weight: 600; color: #333; margin-bottom: 15px; }
-        .schedule-card { padding: 15px 20px; }
-        
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .route-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .schedule-card {
+            padding: 15px 20px;
+        }
+
         /* 倒计时看板样式 */
-        .time-display { font-size: 2.8em; font-weight: bold; margin-bottom: 10px; line-height: 1;}
-        .text-bus1 { color: #007AFF; }
-        .text-bus2 { color: #34C759; }
-        .bus-type-label { font-size: 16px; vertical-align: middle; padding: 4px 10px; border-radius: 12px; font-weight: 500; margin-left: 10px; display: inline-block; position: relative; top: -8px; }
-        .bg-bus1 { background: #E5F1FF; color: #007AFF; }
-        .bg-bus2 { background: #E8F8F0; color: #34C759; }
-        .remain-display { font-size: 1.2em; color: #FF3B30; font-weight: 500; background: #FFF0F0; padding: 5px 12px; border-radius: 20px; display: inline-block;}
-        .empty-state { font-size: 1.2em; color: #999; margin: 20px 0; }
-        
+        .time-display {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .text-bus1 {
+            color: #007AFF;
+        }
+
+        .text-bus2 {
+            color: #34C759;
+        }
+
+        .bus-type-label {
+            font-size: 16px;
+            vertical-align: middle;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+            display: inline-block;
+            position: relative;
+            top: -8px;
+        }
+
+        .bg-bus1 {
+            background: #E5F1FF;
+            color: #007AFF;
+        }
+
+        .bg-bus2 {
+            background: #E8F8F0;
+            color: #34C759;
+        }
+
+        .remain-display {
+            font-size: 1.2em;
+            color: #FF3B30;
+            font-weight: 500;
+            background: #FFF0F0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .empty-state {
+            font-size: 1.2em;
+            color: #999;
+            margin: 20px 0;
+        }
+
         /* 完整时刻表样式 */
-        .schedule-title { font-size: 0.95em; color: #555; text-align: left; margin-bottom: 12px; font-weight: bold; border-left: 4px solid #007AFF; padding-left: 8px;}
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 8px; }
-        .time-badge { padding: 8px 0; text-align: center; border-radius: 8px; font-size: 0.85em; background: #f4f5f7; color: #333; transition: all 0.3s ease;}
-        
+        .schedule-title {
+            font-size: 0.95em;
+            color: #555;
+            text-align: left;
+            margin-bottom: 12px;
+            font-weight: bold;
+            border-left: 4px solid #007AFF;
+            padding-left: 8px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+            gap: 8px;
+        }
+
+        .time-badge {
+            padding: 8px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 0.85em;
+            background: #f4f5f7;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
         /* 班车一和二的角标或颜色 */
-        .time-badge.bus1 { border-bottom: 3px solid rgba(0,122,255, 0.4); }
-        .time-badge.bus2 { border-bottom: 3px solid rgba(52,199,89, 0.4); }
+        .time-badge.bus1 {
+            border-bottom: 3px solid rgba(0, 122, 255, 0.4);
+        }
+
+        .time-badge.bus2 {
+            border-bottom: 3px solid rgba(52, 199, 89, 0.4);
+        }
 
         /* 过去的时间变灰+删除线 */
-        .time-badge.past { color: #bbb; background: #fafafa; border-bottom: 3px solid #eee; text-decoration: line-through; }
+        .time-badge.past {
+            color: #bbb;
+            background: #fafafa;
+            border-bottom: 3px solid #eee;
+            text-decoration: line-through;
+        }
+
         /* 下一班车高亮 */
-        .time-badge.next.bus1 { background: #007AFF; color: #fff; font-weight: bold; border-bottom: 3px solid #005bb5; box-shadow: 0 2px 8px rgba(0,122,255,0.4); transform: scale(1.05);}
-        .time-badge.next.bus2 { background: #34C759; color: #fff; font-weight: bold; border-bottom: 3px solid #248f3f; box-shadow: 0 2px 8px rgba(52,199,89,0.4); transform: scale(1.05);}
-        
-        .footer { font-size: 0.8em; color: #aaa; text-align: center; margin-top: 30px; padding-bottom: 20px;}
+        .time-badge.next.bus1 {
+            background: #007AFF;
+            color: #fff;
+            font-weight: bold;
+            border-bottom: 3px solid #005bb5;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .time-badge.next.bus2 {
+            background: #34C759;
+            color: #fff;
+            font-weight: bold;
+            border-bottom: 3px solid #248f3f;
+            box-shadow: 0 2px 8px rgba(52, 199, 89, 0.4);
+            transform: scale(1.05);
+        }
+
+        .footer {
+            font-size: 0.8em;
+            color: #aaa;
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>🚌 校车实时看板</h2>
-        <div class="current-time" id="clock">当前时间：--:--:--</div>
-    </div>
+<div class="header">
+    <h2>🚌 校车实时看板</h2>
+    <div class="current-time" id="clock">当前时间：--:--:--</div>
+</div>
 
-    <div id="content" class="main-container"></div>
+<div id="content" class="main-container"></div>
 
-    <div class="footer">
-        本地实时运算，无需刷新<br>
-        <a href="https://github.com/yvfubp/beiyin-schoolbus" target="_blank" style="color: #888; text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500;">
-            <svg height="14" width="14" viewBox="0 0 16 16" style="fill: currentColor; margin-right: 5px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-            GitHub 源码
-        </a>
-    </div>
+<div class="footer">
+    本地实时运算，无需刷新<br>
+    <a href="https://github.com/yvfubp/beiyin-schoolbus" target="_blank"
+       style="color: #888; text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500;">
+        <svg height="14" width="14" viewBox="0 0 16 16" style="fill: currentColor; margin-right: 5px;">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        GitHub 源码
+    </a>
+</div>
 
-    <script>
-        const mainToKang = [
-            {time: "07:20", type: 2}, {time: "07:35", type: 1}, {time: "08:00", type: 2}, {time: "08:35", type: 1}, 
-            {time: "08:45", type: 2}, {time: "09:25", type: 1}, {time: "09:50", type: 2}, {time: "10:30", type: 1}, 
-            {time: "10:55", type: 2}, {time: "11:40", type: 1}, {time: "12:30", type: 2}, {time: "13:10", type: 1}, 
-            {time: "13:30", type: 2}, {time: "14:10", type: 1}, {time: "14:25", type: 2}, {time: "15:00", type: 1}, 
-            {time: "15:25", type: 2}, {time: "16:00", type: 1}, {time: "16:25", type: 2}, {time: "17:10", type: 1}, 
-            {time: "18:00", type: 2}, {time: "18:20", type: 1}, {time: "19:00", type: 2}, {time: "19:25", type: 1}, 
-            {time: "19:50", type: 2}, {time: "20:10", type: 1}, {time: "20:40", type: 2}, {time: "21:00", type: 1}, 
-            {time: "21:35", type: 2}, {time: "22:00", type: 1}, {time: "22:15", type: 2}
-        ];
-        const kangToMain = [
-            {time: "07:00", type: 2}, {time: "07:40", type: 2}, {time: "08:00", type: 1}, {time: "08:25", type: 2}, 
-            {time: "09:00", type: 1}, {time: "09:25", type: 2}, {time: "10:00", type: 1}, {time: "10:30", type: 2}, 
-            {time: "10:50", type: 1}, {time: "11:40", type: 2}, {time: "12:30", type: 1}, {time: "13:10", type: 2}, 
-            {time: "13:40", type: 1}, {time: "14:00", type: 2}, {time: "14:30", type: 1}, {time: "15:00", type: 2}, 
-            {time: "15:30", type: 1}, {time: "16:00", type: 2}, {time: "16:30", type: 1}, {time: "17:10", type: 2}, 
-            {time: "17:55", type: 1}, {time: "18:30", type: 2}, {time: "18:40", type: 1}, {time: "19:20", type: 2}, 
-            {time: "19:50", type: 1}, {time: "20:10", type: 2}, {time: "20:40", type: 1}, {time: "21:00", type: 2}, 
-            {time: "21:35", type: 1}, {time: "21:55", type: 2}, {time: "22:20", type: 1}
-        ];
+<script>
+    const mainToKang = [
+        {time: "07:20", type: 2}, {time: "07:35", type: 1}, {time: "08:00", type: 2}, {time: "08:35", type: 1},
+        {time: "08:45", type: 2}, {time: "09:25", type: 1}, {time: "09:50", type: 2}, {time: "10:30", type: 1},
+        {time: "10:55", type: 2}, {time: "11:40", type: 1}, {time: "12:30", type: 2}, {time: "13:10", type: 1},
+        {time: "13:30", type: 2}, {time: "14:10", type: 1}, {time: "14:25", type: 2}, {time: "15:00", type: 1},
+        {time: "15:25", type: 2}, {time: "16:00", type: 1}, {time: "16:25", type: 2}, {time: "17:10", type: 1},
+        {time: "18:00", type: 2}, {time: "18:20", type: 1}, {time: "19:00", type: 2}, {time: "19:25", type: 1},
+        {time: "19:50", type: 2}, {time: "20:10", type: 1}, {time: "20:40", type: 2}, {time: "21:00", type: 1},
+        {time: "21:35", type: 2}, {time: "22:00", type: 1}, {time: "22:15", type: 2}
+    ];
+    const kangToMain = [
+        {time: "07:00", type: 2}, {time: "07:40", type: 2}, {time: "08:00", type: 1}, {time: "08:25", type: 2},
+        {time: "09:00", type: 1}, {time: "09:25", type: 2}, {time: "10:00", type: 1}, {time: "10:30", type: 2},
+        {time: "10:50", type: 1}, {time: "11:40", type: 2}, {time: "12:30", type: 1}, {time: "13:10", type: 2},
+        {time: "13:40", type: 1}, {time: "14:00", type: 2}, {time: "14:30", type: 1}, {time: "15:00", type: 2},
+        {time: "15:30", type: 1}, {time: "16:00", type: 2}, {time: "16:30", type: 1}, {time: "17:10", type: 2},
+        {time: "17:55", type: 1}, {time: "18:30", type: 2}, {time: "18:40", type: 1}, {time: "19:20", type: 2},
+        {time: "19:50", type: 1}, {time: "20:10", type: 2}, {time: "20:40", type: 1}, {time: "21:00", type: 2},
+        {time: "21:35", type: 1}, {time: "21:55", type: 2}, {time: "22:20", type: 1}
+    ];
 
-        function findNextBus(schedule, currentMinutes) {
-            for (let item of schedule) {
-                let parts = item.time.split(':');
-                let busMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-                if (busMinutes > currentMinutes) {
-                    return { time: item.time, type: item.type, remain: busMinutes - currentMinutes };
-                }
+    function findNextBus(schedule, currentMinutes) {
+        for (let item of schedule) {
+            let parts = item.time.split(':');
+            let busMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+            if (busMinutes > currentMinutes) {
+                return {time: item.time, type: item.type, remain: busMinutes - currentMinutes};
             }
-            return null;
+        }
+        return null;
+    }
+
+    // 生成底层网格时刻表的函数
+    function generateScheduleHtml(schedule, currentMinutes, nextBus) {
+        let html = '<div class="grid-container">';
+        for (let item of schedule) {
+            let timeStr = item.time;
+            let busType = item.type;
+            let parts = timeStr.split(':');
+            let busMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+            let cssClass = 'time-badge bus' + busType;
+
+            if (busMinutes <= currentMinutes) {
+                cssClass += ' past';
+            } else if (nextBus && timeStr === nextBus.time) {
+                cssClass += ' next';
+            }
+
+            html += '<div class="' + cssClass + '">' + timeStr + '</div>';
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function updateBoard() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        document.getElementById('clock').innerText = '当前时间：' + hours + ':' + minutes + ':' + seconds;
+
+        const day = now.getDay();
+        let currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const isWeekend = (day === 0 || day === 6);
+
+        // 如果是周末，把当前分钟数设得极大，让所有时刻表变灰
+        if (isWeekend) {
+            currentMinutes = 9999;
         }
 
-        // 生成底层网格时刻表的函数
-        function generateScheduleHtml(schedule, currentMinutes, nextBus) {
-            let html = '<div class="grid-container">';
-            for (let item of schedule) {
-                let timeStr = item.time;
-                let busType = item.type;
-                let parts = timeStr.split(':');
-                let busMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-                let cssClass = 'time-badge bus' + busType;
-                
-                if (busMinutes <= currentMinutes) {
-                    cssClass += ' past'; 
-                } else if (nextBus && timeStr === nextBus.time) {
-                    cssClass += ' next'; 
-                }
-                
-                html += '<div class="' + cssClass + '">' + timeStr + '</div>';
-            }
-            html += '</div>';
-            return html;
+        const nextMK = isWeekend ? null : findNextBus(mainToKang, currentMinutes);
+        const nextKM = isWeekend ? null : findNextBus(kangToMain, currentMinutes);
+
+        let html = '';
+
+        // ================= 左列：校本部 往 康庄 =================
+        html += '<div class="route-column">';
+        // 倒计时卡片
+        html += '<div class="card"><div class="route-title">➡️ 校本部 往 康庄校区</div>';
+        if (isWeekend) {
+            html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
+        } else if (nextMK) {
+            let typeName = nextMK.type === 1 ? '班车一' : '班车二';
+            let typeClass = nextMK.type === 1 ? 'bg-bus1' : 'bg-bus2';
+            let textClass = nextMK.type === 1 ? 'text-bus1' : 'text-bus2';
+            html += '<div class="time-display ' + textClass + '">' + nextMK.time + '<span class="bus-type-label ' + typeClass + '">' + typeName + '</span></div><div class="remain-display">还剩 ' + nextMK.remain + ' 分钟</div>';
+        } else {
+            html += '<div class="empty-state">今日已无班车</div>';
         }
+        html += '</div>';
+        // 完整时刻表卡片
+        html += '<div class="card schedule-card">';
+        html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
+        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
+        html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
+        html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
+        html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
+        html += '</div></div>';
+        html += generateScheduleHtml(mainToKang, currentMinutes, nextMK);
+        html += '</div>';
+        html += '</div>'; // 左列结束
 
-        function updateBoard() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            document.getElementById('clock').innerText = '当前时间：' + hours + ':' + minutes + ':' + seconds;
-
-            const day = now.getDay();
-            let currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const isWeekend = (day === 0 || day === 6);
-            
-            // 如果是周末，把当前分钟数设得极大，让所有时刻表变灰
-            if (isWeekend) { currentMinutes = 9999; }
-
-            const nextMK = isWeekend ? null : findNextBus(mainToKang, currentMinutes);
-            const nextKM = isWeekend ? null : findNextBus(kangToMain, currentMinutes);
-
-            let html = '';
-
-            // ================= 左列：校本部 往 康庄 =================
-            html += '<div class="route-column">';
-            // 倒计时卡片
-            html += '<div class="card"><div class="route-title">➡️ 校本部 往 康庄校区</div>';
-            if (isWeekend) {
-                html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
-            } else if (nextMK) {
-                let typeName = nextMK.type === 1 ? '班车一' : '班车二';
-                let typeClass = nextMK.type === 1 ? 'bg-bus1' : 'bg-bus2';
-                let textClass = nextMK.type === 1 ? 'text-bus1' : 'text-bus2';
-                html += '<div class="time-display ' + textClass + '">' + nextMK.time + '<span class="bus-type-label ' + typeClass + '">' + typeName + '</span></div><div class="remain-display">还剩 ' + nextMK.remain + ' 分钟</div>';
-            } else {
-                html += '<div class="empty-state">今日已无班车</div>';
-            }
-            html += '</div>';
-            // 完整时刻表卡片
-            html += '<div class="card schedule-card">';
-            html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
-            html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
-            html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
-            html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
-            html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
-            html += '</div></div>';
-            html += generateScheduleHtml(mainToKang, currentMinutes, nextMK);
-            html += '</div>';
-            html += '</div>'; // 左列结束
-
-            // ================= 右列：康庄 往 校本部 =================
-            html += '<div class="route-column">';
-            // 倒计时卡片
-            html += '<div class="card"><div class="route-title">⬅️ 康庄校区 往 校本部</div>';
-            if (isWeekend) {
-                html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
-            } else if (nextKM) {
-                let typeName = nextKM.type === 1 ? '班车一' : '班车二';
-                let typeClass = nextKM.type === 1 ? 'bg-bus1' : 'bg-bus2';
-                let textClass = nextKM.type === 1 ? 'text-bus1' : 'text-bus2';
-                html += '<div class="time-display ' + textClass + '">' + nextKM.time + '<span class="bus-type-label ' + typeClass + '">' + typeName + '</span></div><div class="remain-display">还剩 ' + nextKM.remain + ' 分钟</div>';
-            } else {
-                html += '<div class="empty-state">今日已无班车</div>';
-            }
-            html += '</div>';
-            // 完整时刻表卡片
-            html += '<div class="card schedule-card">';
-            html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
-            html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
-            html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
-            html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
-            html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
-            html += '</div></div>';
-            html += generateScheduleHtml(kangToMain, currentMinutes, nextKM);
-            html += '</div>';
-            html += '</div>'; // 右列结束
-
-            document.getElementById('content').innerHTML = html;
+        // ================= 右列：康庄 往 校本部 =================
+        html += '<div class="route-column">';
+        // 倒计时卡片
+        html += '<div class="card"><div class="route-title">⬅️ 康庄校区 往 校本部</div>';
+        if (isWeekend) {
+            html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
+        } else if (nextKM) {
+            let typeName = nextKM.type === 1 ? '班车一' : '班车二';
+            let typeClass = nextKM.type === 1 ? 'bg-bus1' : 'bg-bus2';
+            let textClass = nextKM.type === 1 ? 'text-bus1' : 'text-bus2';
+            html += '<div class="time-display ' + textClass + '">' + nextKM.time + '<span class="bus-type-label ' + typeClass + '">' + typeName + '</span></div><div class="remain-display">还剩 ' + nextKM.remain + ' 分钟</div>';
+        } else {
+            html += '<div class="empty-state">今日已无班车</div>';
         }
+        html += '</div>';
+        // 完整时刻表卡片
+        html += '<div class="card schedule-card">';
+        html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
+        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
+        html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
+        html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
+        html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
+        html += '</div></div>';
+        html += generateScheduleHtml(kangToMain, currentMinutes, nextKM);
+        html += '</div>';
+        html += '</div>'; // 右列结束
 
-        setInterval(updateBoard, 1000);
-        // 注册 Service Worker
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('sw.js').then(() => {
+        document.getElementById('content').innerHTML = html;
+    }
+
+    setInterval(updateBoard, 1000);
+    // 注册 Service Worker
+    //test
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(() => {
             console.log('Service Worker 注册成功，离线可用！');
-          });
-        }
-        updateBoard();
-    </script>
+        });
+    }
+    updateBoard();
+</script>
 </body>
 </html>
-//111
