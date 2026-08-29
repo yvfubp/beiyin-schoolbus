@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007AFF">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北印校车时刻</title>
@@ -282,17 +279,10 @@
 
         document.getElementById('clock').innerText = '当前时间：' + hours + ':' + minutes + ':' + seconds;
 
-        const day = now.getDay();
         let currentMinutes = now.getHours() * 60 + now.getMinutes();
-        const isWeekend = (day === 0 || day === 6);
 
-        // 如果是周末，把当前分钟数设得极大，让所有时刻表变灰
-        if (isWeekend) {
-            currentMinutes = 9999;
-        }
-
-        const nextMK = isWeekend ? null : findNextBus(mainToKang, currentMinutes);
-        const nextKM = isWeekend ? null : findNextBus(kangToMain, currentMinutes);
+        const nextMK = findNextBus(mainToKang, currentMinutes);
+        const nextKM = findNextBus(kangToMain, currentMinutes);
 
         let html = '';
 
@@ -300,9 +290,7 @@
         html += '<div class="route-column">';
         // 倒计时卡片
         html += '<div class="card"><div class="route-title">➡️ 校本部 往 康庄校区</div>';
-        if (isWeekend) {
-            html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
-        } else if (nextMK) {
+        if (nextMK) {
             let typeName = nextMK.type === 1 ? '班车一' : '班车二';
             let typeClass = nextMK.type === 1 ? 'bg-bus1' : 'bg-bus2';
             let textClass = nextMK.type === 1 ? 'text-bus1' : 'text-bus2';
@@ -314,7 +302,7 @@
         // 完整时刻表卡片
         html += '<div class="card schedule-card">';
         html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
-        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
+        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表</div>';
         html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
         html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
         html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
@@ -327,9 +315,7 @@
         html += '<div class="route-column">';
         // 倒计时卡片
         html += '<div class="card"><div class="route-title">⬅️ 康庄校区 往 校本部</div>';
-        if (isWeekend) {
-            html += '<div class="empty-state">今天是周末<br>按时刻表无班车哦 🛌</div>';
-        } else if (nextKM) {
+        if (nextKM) {
             let typeName = nextKM.type === 1 ? '班车一' : '班车二';
             let typeClass = nextKM.type === 1 ? 'bg-bus1' : 'bg-bus2';
             let textClass = nextKM.type === 1 ? 'text-bus1' : 'text-bus2';
@@ -341,7 +327,7 @@
         // 完整时刻表卡片
         html += '<div class="card schedule-card">';
         html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">';
-        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表 (工作日)</div>';
+        html += '<div class="schedule-title" style="margin-bottom: 0;">📅 完整时刻表</div>';
         html += '<div style="display: flex; gap: 10px; font-size: 0.85em; color: #555;">';
         html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(0,122,255, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车一</div>';
         html += '<div><span style="display:inline-block; width:12px; height:4px; background:rgba(52,199,89, 0.4); border-radius:2px; vertical-align:middle;"></span> 班车二</div>';
@@ -354,10 +340,12 @@
     }
 
     setInterval(updateBoard, 1000);
-    // 注册 Service Worker
+    // 注销之前可能残留的 Service Worker
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(() => {
-            console.log('Service Worker 注册成功，离线可用！');
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (let registration of registrations) {
+                registration.unregister();
+            }
         });
     }
     updateBoard();
