@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北印校车时刻</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚌</text></svg>">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -271,16 +272,11 @@
         return html;
     }
 
-    function updateBoard() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
+    const clockEl = document.getElementById('clock');
+    const contentEl = document.getElementById('content');
+    let lastRenderedMinutes = -1;
 
-        document.getElementById('clock').innerText = '当前时间：' + hours + ':' + minutes + ':' + seconds;
-
-        let currentMinutes = now.getHours() * 60 + now.getMinutes();
-
+    function renderScheduleBoard(currentMinutes) {
         const nextMK = findNextBus(mainToKang, currentMinutes);
         const nextKM = findNextBus(kangToMain, currentMinutes);
 
@@ -336,10 +332,32 @@
         html += '</div>';
         html += '</div>'; // 右列结束
 
-        document.getElementById('content').innerHTML = html;
+        contentEl.innerHTML = html;
+    }
+
+    function updateBoard() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        clockEl.textContent = '当前时间：' + hours + ':' + minutes + ':' + seconds;
+
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        // 仅在分钟数变化时才重新计算和渲染时刻表 DOM，减少 98% 的重绘开销
+        if (currentMinutes !== lastRenderedMinutes) {
+            lastRenderedMinutes = currentMinutes;
+            renderScheduleBoard(currentMinutes);
+        }
     }
 
     setInterval(updateBoard, 1000);
+    // 手机息屏唤醒或切回后台标签页时立即刷新
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            updateBoard();
+        }
+    });
     // 注销之前可能残留的 Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(registrations => {
